@@ -1,0 +1,21 @@
+version: "3.8"
+
+x-react-common: &react-common
+  build: .
+  image: tracktick-challange
+  stdin_open: true
+  environment:
+    HOST: 0.0.0.0
+    NODE_ENV: development
+  volumes:
+    - .:/app
+
+services:
+  app:
+    <<: *react-common
+    ports:
+      - 3000:3000
+    command: >
+      bash -c "
+        yarn install &&
+        yarn start"
