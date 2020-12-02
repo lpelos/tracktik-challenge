@@ -59,7 +59,25 @@ Or, if you are not using Docker:
 $ yarn start
 ```
 
-The application will then be available at http://localhost:3000.
+The application will become available at http://localhost:3000.
+
+## Storybook
+
+With [Storybook](https://storybook.js.org/docs/react/get-started/introduction)
+it is possible to test the project's components visually and interact with them
+in an isolated environment.
+
+```
+$ docker-compose up storybook
+```
+
+Or, if you are not using Docker:
+
+```
+$ yarn storybook
+```
+
+The storybook's UI will become available at http://localhost:6006.
 
 ## Testing
 
