@@ -3,7 +3,16 @@ import { fireEvent, render, screen } from "@testing-library/react";
 
 import { siteListActionData, siteListData } from "./SiteList.stories";
 import { SiteListProps } from "./SiteList";
+import { SiteSummaryProps } from "../SiteSummary";
 import SiteList from "./";
+
+const SiteSummaryMock: React.FC<SiteSummaryProps> = ({ data }) => {
+  return (
+    <div test-id={`site-summary-mock-${data.id}`}>{JSON.stringify(data)}</div>
+  );
+};
+
+jest.mock("../SiteSummary", () => SiteSummaryMock);
 
 describe("<SiteList />", () => {
   let onClickItemMock: SiteListProps["onClickItem"];
@@ -19,50 +28,20 @@ describe("<SiteList />", () => {
     );
   });
 
-  test("renders titles", () => {
-    siteListData.data.forEach(({ title }) => {
-      expect(screen.getByText(title)).toBeInTheDocument();
-    });
-  });
-
-  test("renders addresses", () => {
-    siteListData.data.forEach(({ address }) => {
-      const cityEl = screen.getByText(new RegExp(address.city));
-      expect(cityEl).toBeInTheDocument();
-
-      const countryEl = screen.getByText(new RegExp(address.country));
-      expect(countryEl).toBeInTheDocument();
-
-      const stateEl = screen.getByText(new RegExp(address.state));
-      expect(stateEl).toBeInTheDocument();
-
-      const streetEl = screen.getByText(new RegExp(address.street));
-      expect(streetEl).toBeInTheDocument();
-
-      const zipCodeEl = screen.getByText(new RegExp(address.zipCode));
-      expect(zipCodeEl).toBeInTheDocument();
-    });
-  });
-
-  test("renders contact names", () => {
-    siteListData.data.forEach(({ contact }) => {
-      expect(screen.getByText(contact.name)).toBeInTheDocument();
-    });
-  });
-
-  test("renders first image", () => {
-    siteListData.data.forEach(({ images, title }) => {
-      const imageEl = screen.getByAltText(`${title} avatar`);
-      expect(imageEl.getAttribute('src')).toBe(images[0]);
+  test("renders site summaries", () => {
+    siteListData.data.forEach((site) => {
+      const siteJSON = JSON.stringify(site);
+      expect(screen.getByText(siteJSON)).toBeInTheDocument();
     });
   });
 
   test("triggers click item callback", () => {
-    const { id, title } = siteListData.data[1];
-    const titleEl = screen.getByText(title);
+    const site = siteListData.data[1];
+    const siteJSON = JSON.stringify(site);
+    const summaryEl = screen.getByText(siteJSON);
 
-    fireEvent.click(titleEl);
+    fireEvent.click(summaryEl);
 
-    expect(onClickItemMock).toHaveBeenCalledWith(id);
+    expect(onClickItemMock).toHaveBeenCalledWith(site.id);
   });
 });

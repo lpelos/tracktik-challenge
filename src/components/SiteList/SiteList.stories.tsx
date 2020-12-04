@@ -4,6 +4,7 @@ import { action } from "@storybook/addon-actions";
 import { Meta, Story } from "@storybook/react";
 
 import SiteList, { SiteListProps } from ".";
+import { siteDetailsData } from "../SiteDetails/SiteDetails.stories";
 
 export default {
   title: "SiteList",
@@ -13,26 +14,7 @@ export default {
 
 export const siteListData: Omit<SiteListProps, "onClickItem"> = {
   data: [
-    {
-      address: {
-        city: "Haleyport",
-        country: "Sao Tome and Principe",
-        state: "New Hampshire",
-        street: "851 Isabelle Key",
-        zipCode: "30499",
-      },
-      contact: {
-        address: { city: "", country: "", state: "", street: "", zipCode: "" },
-        email: "",
-        id: "1vNumQ__HE",
-        jobTitle: "",
-        name: "Mckayla Kessler",
-        phoneNumber: "",
-      },
-      id: "pCGuMv5F92",
-      images: ["http://lorempixel.com/640/480/city"],
-      title: "Books Shop",
-    },
+    siteDetailsData.data,
     {
       address: {
         city: "Lake Lulu",
@@ -50,7 +32,7 @@ export const siteListData: Omit<SiteListProps, "onClickItem"> = {
         phoneNumber: "",
       },
       id: "Vcz1RNdIEl",
-      images: ["http://lorempixel.com/640/480/business"],
+      images: ["http://lorempixel.com/640/480/city/Grocery-HQ-1"],
       title: "Grocery HQ",
     },
     {
@@ -70,7 +52,7 @@ export const siteListData: Omit<SiteListProps, "onClickItem"> = {
         phoneNumber: "",
       },
       id: "CJsE0glVgi",
-      images: ["http://lorempixel.com/640/480/city"],
+      images: ["http://lorempixel.com/640/480/city/Books-Garage-1"],
       title: "Books Garage",
     },
   ],
