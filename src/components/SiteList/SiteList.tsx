@@ -5,6 +5,7 @@ import ChevronRight from "@material-ui/icons/ChevronRight";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import Typography from "@material-ui/core/Typography";
 
 import SiteData from "../../data-types/site-data";
 import SiteSummary from "../SiteSummary";
@@ -17,6 +18,18 @@ export interface SiteListProps {
 const SiteList: React.FC<SiteListProps> = ({ data, onClickItem }) => {
   return (
     <div className="SiteList">
+      <Box
+        bgcolor="primary.main"
+        color="white"
+        component="header"
+        role="header"
+        p={1}
+      >
+        <Typography align="center" variant="subtitle1">
+          Sites
+        </Typography>
+      </Box>
+
       <List component="nav">
         {data.map((site, i) => (
           <React.Fragment key={site.id}>

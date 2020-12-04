@@ -23,9 +23,11 @@ const SiteDetails: React.FC<SiteDetailsProps> = ({
       <Box
         bgcolor="primary.main"
         color="white"
+        component="header"
         display="flex"
         flexDirection="row"
         p={2}
+        role="header"
       >
         <IconButton color="inherit" title="Go back" onClick={onBackButtonClick}>
           <ChevronLeft />
