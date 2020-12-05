@@ -2,7 +2,6 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 
 import { contactDetailsData } from "./ContactDetails.stories";
-import { ContactDetailsProps } from "./ContactDetails";
 import ContactDetails from "./";
 
 describe("<ContactDetails />", () => {
