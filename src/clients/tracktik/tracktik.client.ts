@@ -16,7 +16,7 @@ interface TrackTikClientDependencies {
 
 //#endregion Typings
 
-class TrackTickClient {
+class TrackTikClient {
   private host: string;
   private httpClient: HttpClient;
 
@@ -106,4 +106,4 @@ class TrackTickClient {
   }
 }
 
-export default TrackTickClient;
+export default TrackTikClient;

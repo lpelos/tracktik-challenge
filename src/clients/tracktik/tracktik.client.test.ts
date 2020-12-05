@@ -1,19 +1,19 @@
 import { of } from "rxjs";
 
-import { SITES_JSON_MOCK } from "./tacktick.mocks";
+import { SITES_JSON_MOCK } from "./tacktik.mocks";
 import HttpClient, { HttpResponse } from "../http";
 import SiteData from "../../data-types/site-data";
-import TrackTickClient from "./tracktik.client";
+import TrackTikClient from "./tracktik.client";
 
-describe("TrackTickClient", () => {
+describe("TrackTikClient", () => {
   const host = "https//example.com";
 
   let httpClientMock: HttpClient;
-  let client: TrackTickClient;
+  let client: TrackTikClient;
 
   beforeEach(() => {
     httpClientMock = { get: jest.fn(() => of()) } as any;
-    client = new TrackTickClient({ host, httpClient: httpClientMock });
+    client = new TrackTikClient({ host, httpClient: httpClientMock });
   });
 
   test("should initialize without crashing", () => {
