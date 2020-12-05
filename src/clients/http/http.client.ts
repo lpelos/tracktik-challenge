@@ -64,7 +64,7 @@ export class HttpClient {
 
   private handleError(err: any): Observable<never> {
     if (err instanceof HttpClientError) {
-      // Possible improvement:
+      // Possible improvements:
       // * handle and throw specific errors for specific situations (e.g., 401 unauthorized)
       // * send error data to an analytics service
 
