@@ -4,6 +4,8 @@ x-react-common: &react-common
   build: .
   image: tracktick-challange
   stdin_open: true
+  env_file:
+    - .env.dev
   environment:
     HOST: 0.0.0.0
     NODE_ENV: development

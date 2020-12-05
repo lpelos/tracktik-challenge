@@ -1,18 +1,21 @@
-import React from 'react';
+import React from "react";
 
 import { Provider as ReduxProvider } from "react-redux";
 
-import './App.css';
+import "./App.css";
 import configureStore from "./redux/store";
+import SiteListContainer from "./containers/SiteListContainer";
 
 const store = configureStore();
 
 const App: React.FC = () => {
   return (
-    <ReduxProvider store={store}>
-      <div className="App">TODO</div>
-    </ReduxProvider>
+    <div className="App">
+      <ReduxProvider store={store}>
+        <SiteListContainer />
+      </ReduxProvider>
+    </div>
   );
-}
+};
 
 export default App;

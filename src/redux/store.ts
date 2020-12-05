@@ -10,13 +10,26 @@ import { catchError } from "rxjs/operators";
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable";
 import { throwError } from "rxjs";
 
-const rootReducer = combineReducers({});
+import { getSiteRepository } from "../initializers";
+import sitesReducer, { sitesEpics } from "./sites";
+
+//#region Redux setup
+
+const rootReducer = combineReducers({
+  sites: sitesReducer,
+});
 
 export type RootReducer = typeof rootReducer;
 
 export type RootState = ReturnType<RootReducer>;
 
-const epicDependencies = {};
+//#endregion Redux setup
+
+//#region Redux Observable setup
+
+const epicDependencies = {
+  siteRepository: getSiteRepository(),
+};
 
 export type AppEpicDependencies = typeof epicDependencies;
 
@@ -26,7 +39,7 @@ export type AppEpic<
 > = Epic<Input, Output, RootState, AppEpicDependencies>;
 
 const rootEpic: AppEpic = (action$, state$, dep) =>
-  combineEpics<AppEpic>()(action$, state$, dep).pipe(
+  combineEpics<AppEpic>(sitesEpics)(action$, state$, dep).pipe(
     catchError((error: Error) => {
       const { message, name } = error;
       // Possible improvement: send error data to an analytics service
@@ -41,6 +54,8 @@ const epicMiddleware = createEpicMiddleware<
   RootState,
   AppEpicDependencies
 >({ dependencies: epicDependencies });
+
+//#endregion Redux Observable setup
 
 const middlewares: Middleware[] = [epicMiddleware];
 

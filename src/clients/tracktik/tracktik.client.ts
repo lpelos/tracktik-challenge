@@ -21,6 +21,7 @@ class TrackTikClient {
   private httpClient: HttpClient;
 
   constructor({ host, httpClient }: TrackTikClientDependencies) {
+    console.log({ host });
     this.host = host;
     this.httpClient = httpClient;
   }
@@ -80,13 +81,7 @@ class TrackTikClient {
   }
 
   private parseSite(json: Record<string, any>): SiteData {
-    const {
-      address: addressJSON,
-      contacts,
-      id,
-      images,
-      title,
-    } = json;
+    const { address: addressJSON, contacts, id, images, title } = json;
 
     return {
       address: addressJSON && this.parseAddress(addressJSON),
@@ -102,7 +97,9 @@ class TrackTikClient {
   }
 
   private url(path?: string): string {
-    return [this.host, path].filter(Boolean).join("/");
+    return [this.host.replace(/\/$/, ""), path?.replace(/^\//, "")]
+      .filter(Boolean)
+      .join("/");
   }
 }
 
