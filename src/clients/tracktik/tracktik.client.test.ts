@@ -1,7 +1,8 @@
 import { of } from "rxjs";
 
-import { SITES_JSON_MOCK } from "./tacktik.mocks";
+import FIND_SITE_RESPONSE from "../../__fixtures__/find-site-response.fixture";
 import HttpClient, { HttpResponse } from "../http";
+import LIST_SITES_RESPONSE from "../../__fixtures__/list-sites-response.fixture";
 import SiteData from "../../data-types/site-data";
 import TrackTikClient from "./tracktik.client";
 
@@ -22,13 +23,13 @@ describe("TrackTikClient", () => {
 
   describe("site APIs", () => {
     describe("#findSite", () => {
-      const json = SITES_JSON_MOCK[0];
+      const json = FIND_SITE_RESPONSE;
       const siteId = json.id;
 
       beforeEach(() => {
         httpClientMock.get = jest.fn(() =>
           of({
-            body: SITES_JSON_MOCK[0],
+            body: FIND_SITE_RESPONSE,
             header: {},
             status: 200,
           } as HttpResponse)
@@ -85,7 +86,7 @@ describe("TrackTikClient", () => {
       beforeEach(() => {
         httpClientMock.get = jest.fn(() =>
           of({
-            body: SITES_JSON_MOCK,
+            body: LIST_SITES_RESPONSE,
             header: {},
             status: 200,
           } as HttpResponse)
@@ -103,7 +104,7 @@ describe("TrackTikClient", () => {
       test("response", (done) => {
         client.listSites().subscribe((resp) => {
           resp.forEach((resp, i) => {
-            const json = SITES_JSON_MOCK[i];
+            const json = LIST_SITES_RESPONSE[i];
             const site: SiteData = {
               address: {
                 city: json.address.city,

@@ -21,7 +21,6 @@ class TrackTikClient {
   private httpClient: HttpClient;
 
   constructor({ host, httpClient }: TrackTikClientDependencies) {
-    console.log({ host });
     this.host = host;
     this.httpClient = httpClient;
   }

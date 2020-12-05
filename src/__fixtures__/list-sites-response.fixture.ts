@@ -1,4 +1,4 @@
-export const SITES_JSON_MOCK = [
+const LIST_SITES_RESPONSE = [
   {
     id: "h8ZUHSsZ_A",
     clientId: "HYm3QIXsbAQYL",
@@ -74,3 +74,5 @@ export const SITES_JSON_MOCK = [
     tags: ["new", "company"],
   },
 ];
+
+export default LIST_SITES_RESPONSE;
