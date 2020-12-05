@@ -4,32 +4,35 @@ import { combineEpics } from "redux-observable";
 import { keyBy } from "lodash";
 import { of } from "rxjs";
 
-import { AppEpic, RootState } from "./store";
-import { errorToJSON } from "../helpers/error.helper";
-import ErrorData from "../data-types/error-data";
-import SiteData from "../data-types/site-data";
+import { AppEpic, RootAction, RootState } from "../store";
+import { errorToJSON } from "../../helpers/error.helper";
+import ErrorData from "../../data-types/error-data";
+import SiteData from "../../data-types/site-data";
 
 //#region Actions
 
 //#region public List Actions
 const LIST_CANCEL = "sites/list_cancel";
 const listCancelAction = () => action(LIST_CANCEL);
-type ListCancelAction = ActionType<typeof listCancelAction>;
 
 const LIST_FAILURE = "sites/list_failure";
 const listFailureAction = (error: Error) =>
   action(LIST_FAILURE, { error: errorToJSON(error) });
-type ListFailureAction = ActionType<typeof listFailureAction>;
 
 const LIST_REQUEST = "sites/list_request";
 const listRequestAction = () => action(LIST_REQUEST);
-type ListRequestAction = ActionType<typeof listRequestAction>;
 
 const LIST_SUCCESS = "sites/list_success";
 const listSuccessAction = (sites: SiteData[]) =>
   action(LIST_SUCCESS, { sites });
-type ListSuccessAction = ActionType<typeof listSuccessAction>;
 //#endregion public List Actions
+
+export const SITES_ACTION_TYPES = {
+  LIST_CANCEL,
+  LIST_FAILURE,
+  LIST_REQUEST,
+  LIST_SUCCESS,
+}
 
 export const sitesActions = {
   listCancel: listCancelAction,
@@ -38,7 +41,7 @@ export const sitesActions = {
   listSuccess: listSuccessAction,
 };
 
-type SitesAction = ActionType<typeof sitesActions>;
+export type SitesAction = ActionType<typeof sitesActions>;
 
 //#endregion Actions
 
@@ -65,7 +68,7 @@ export const selectSitesListIsRequesting = (rootState: RootState) => {
 
 //#region Reducers
 
-interface SitesState {
+export interface SitesState {
   error?: ErrorData;
   ids: SiteData["id"][];
   isRequesting: boolean;
@@ -78,7 +81,7 @@ const initialState: SitesState = {
   listById: {},
 };
 
-const sitesReducer = (state = initialState, action: SitesAction) => {
+const sitesReducer = (state = initialState, action: RootAction) => {
   switch (action.type) {
     case LIST_CANCEL: {
       return { ...state, isRequesting: false };
@@ -115,10 +118,7 @@ const sitesReducer = (state = initialState, action: SitesAction) => {
 
 //#region Epics
 
-const listEpic: AppEpic<
-  ListCancelAction | ListFailureAction | ListRequestAction | ListSuccessAction,
-  ListFailureAction | ListSuccessAction
-> = (action$, _, { siteRepository }) =>
+const listEpic: AppEpic = (action$, _, { siteRepository }) =>
   action$.pipe(
     filter(isOfType(LIST_REQUEST)),
     mergeMap(() =>

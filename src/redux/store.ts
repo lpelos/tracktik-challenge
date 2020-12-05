@@ -1,5 +1,4 @@
 import {
-  Action,
   applyMiddleware,
   combineReducers,
   createStore,
@@ -11,9 +10,11 @@ import { combineEpics, createEpicMiddleware, Epic } from "redux-observable";
 import { throwError } from "rxjs";
 
 import { getSiteRepository } from "../initializers";
-import sitesReducer, { sitesEpics } from "./sites";
+import sitesReducer, { SitesAction, sitesEpics } from "./sites";
 
 //#region Redux setup
+
+export type RootAction = SitesAction;
 
 const rootReducer = combineReducers({
   sites: sitesReducer,
@@ -33,10 +34,12 @@ const epicDependencies = {
 
 export type AppEpicDependencies = typeof epicDependencies;
 
-export type AppEpic<
-  Input extends Action = Action,
-  Output extends Input = Input
-> = Epic<Input, Output, RootState, AppEpicDependencies>;
+export type AppEpic = Epic<
+  RootAction,
+  RootAction,
+  RootState,
+  AppEpicDependencies
+>;
 
 const rootEpic: AppEpic = (action$, state$, dep) =>
   combineEpics<AppEpic>(sitesEpics)(action$, state$, dep).pipe(
@@ -49,8 +52,8 @@ const rootEpic: AppEpic = (action$, state$, dep) =>
   );
 
 const epicMiddleware = createEpicMiddleware<
-  Action,
-  Action,
+  RootAction,
+  RootAction,
   RootState,
   AppEpicDependencies
 >({ dependencies: epicDependencies });
