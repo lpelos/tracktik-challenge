@@ -26,6 +26,7 @@
     "react-scripts": "4.0.1",
     "react-slick": "^0.27.13",
     "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.3",
     "slick-carousel": "^1.8.1",
@@ -51,6 +52,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.11",
     "@types/react-slick": "^0.23.4",
+    "@types/redux-logger": "^3.0.8",
     "@types/superagent": "^4.1.10",
     "babel-loader": "8.1.0"
   },

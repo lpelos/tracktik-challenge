@@ -8,7 +8,9 @@ import {
 import { catchError } from "rxjs/operators";
 import { combineEpics, createEpicMiddleware, Epic } from "redux-observable";
 import { throwError } from "rxjs";
+import logger from "redux-logger";
 
+import { ENVIRONMENT } from "../env";
 import { getSiteRepository } from "../initializers";
 import sitesReducer, { SitesAction, sitesEpics } from "./sites";
 
@@ -60,7 +62,10 @@ const epicMiddleware = createEpicMiddleware<
 
 //#endregion Redux Observable setup
 
-const middlewares: Middleware[] = [epicMiddleware];
+let middlewares: Middleware[] = [epicMiddleware];
+if (ENVIRONMENT === "development") {
+  middlewares = [...middlewares, logger];
+}
 
 export default function configureStore(): Store<RootState> {
   const store = createStore(rootReducer, applyMiddleware(...middlewares));
