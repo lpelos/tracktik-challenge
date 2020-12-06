@@ -27,7 +27,9 @@ const mapDispatch = (dispatch: Dispatch) => ({
 
 const connector = connect(mapState, mapDispatch);
 
-type Props = ConnectedProps<typeof connector>;
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+type Props = PropsFromRedux
 
 const SiteListContainer: React.FC<Props> = ({
   data,
@@ -37,10 +39,6 @@ const SiteListContainer: React.FC<Props> = ({
   onRequest,
   onRequestMore,
 }) => {
-  const handleClickItem = useCallback<SiteListProps["onClickItem"]>(() => {
-    console.log("TODO: handle onClickItem");
-  }, []);
-
   const handleLoad = useCallback<SiteListProps["onLoad"]>(() => {
     if (error && data.length === 0) {
       onRequest();
@@ -60,7 +58,6 @@ const SiteListContainer: React.FC<Props> = ({
       hasError={!!error}
       hasMore={hasMore}
       isLoading={isRequesing}
-      onClickItem={handleClickItem}
       onLoad={handleLoad}
     />
   );

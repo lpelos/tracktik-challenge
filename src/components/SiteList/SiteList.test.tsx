@@ -1,6 +1,8 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { MemoryRouter } from "react-router-dom";
+
 import { siteListData } from "./SiteList.stories";
 import { SiteListProps } from "./SiteList";
 import { SiteSummaryProps } from "../SiteSummary";
@@ -15,24 +17,25 @@ const SiteSummaryMock: React.FC<SiteSummaryProps> = ({ data }) => {
 jest.mock("../SiteSummary", () => SiteSummaryMock);
 
 describe("<SiteList />", () => {
+  let container: (component: React.ReactElement) => React.ReactElement;
   let props: SiteListProps;
 
-  let onLoadMock: SiteListProps["onLoad"];
-  let onClickItemMock: SiteListProps["onClickItem"];
+  let onLinkClickMock: jest.Mock<SiteListProps["onLinkClick"]>;
+  let onLoadMock: Required<SiteListProps>["onLoad"];
 
   beforeEach(() => {
-    onClickItemMock = jest.fn();
+    container = (component) => <MemoryRouter>{component}</MemoryRouter>;
+    onLinkClickMock = jest.fn();
     onLoadMock = jest.fn();
-
     props = {
       ...siteListData,
-      onClickItem: onClickItemMock,
+      onLinkClick: onLinkClickMock,
       onLoad: onLoadMock,
     };
   });
 
   test("renders site summaries", () => {
-    render(<SiteList {...props} />);
+    render(container(<SiteList {...props} />));
     siteListData.data.forEach((site) => {
       const siteJSON = JSON.stringify(site);
       expect(screen.getByText(siteJSON)).toBeInTheDocument();
@@ -40,35 +43,37 @@ describe("<SiteList />", () => {
   });
 
   test("renders spinner", () => {
-    render(<SiteList {...props} isLoading={true} />);
+    render(container(<SiteList {...props} isLoading={true} />));
     expect(screen.getByRole(/spinner/i)).toBeInTheDocument();
   });
 
   test("renders end of the list message", () => {
-    render(<SiteList {...props} hasMore={false} />);
+    render(container(<SiteList {...props} hasMore={false} />));
     const messageEl = screen.getByText(/you reached the end of the list/i);
     expect(messageEl).toBeInTheDocument();
   });
 
   test("renders empty list message", () => {
-    render(<SiteList {...props} data={[]} hasMore={false} />);
+    render(container(<SiteList {...props} data={[]} hasMore={false} />));
     const messageEl = screen.getByText(/there are no sites to be found/i);
     expect(messageEl).toBeInTheDocument();
   });
 
-  test("triggers click item callback", () => {
-    render(<SiteList {...props} />);
+  test("triggers link click callback", () => {
+    render(container(<SiteList {...props} />));
     const site = siteListData.data[1];
     const siteJSON = JSON.stringify(site);
     const summaryEl = screen.getByText(siteJSON);
 
     fireEvent.click(summaryEl);
 
-    expect(onClickItemMock).toHaveBeenCalledWith(site.id);
+    expect(onLinkClickMock).toHaveBeenCalled();
+    expect(onLinkClickMock.mock.calls[0][0]).toMatchObject({ type: "click" });
+    expect(onLinkClickMock.mock.calls[0][1]).toEqual(site.id);
   });
 
   test("triggers load more callback", () => {
-    render(<SiteList {...props} />);
+    render(container(<SiteList {...props} />));
     const loadMoreButtonEl = screen.getByText(/load more/i);
     fireEvent.click(loadMoreButtonEl);
     expect(onLoadMock).toHaveBeenCalled();
@@ -76,7 +81,7 @@ describe("<SiteList />", () => {
 
   describe("with error", () => {
     beforeEach(() => {
-      render(<SiteList {...props} data={[]} hasError={true} />);
+      render(container(<SiteList {...props} data={[]} hasError={true} />));
     });
 
     test("renders message", () => {

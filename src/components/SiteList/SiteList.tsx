@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Link as RouterLink } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import ChevronRight from "@material-ui/icons/ChevronRight";
@@ -17,7 +18,7 @@ export interface SiteListProps {
   hasError?: boolean;
   hasMore?: boolean;
   isLoading?: boolean;
-  onClickItem: (siteId: SiteData["id"]) => void;
+  onLinkClick?: (e: React.MouseEvent, ...args: any[]) => void;
   onLoad: () => void;
 }
 
@@ -26,7 +27,7 @@ const SiteList: React.FC<SiteListProps> = ({
   hasError = false,
   hasMore = false,
   isLoading = false,
-  onClickItem,
+  onLinkClick,
   onLoad,
 }) => {
   return (
@@ -48,17 +49,31 @@ const SiteList: React.FC<SiteListProps> = ({
           <React.Fragment key={site.id}>
             {i > 0 ? <Divider /> : null}
 
-            <ListItem button onClick={() => onClickItem(site.id)}>
-              <Box flex={1} minWidth={0}>
-                <SiteSummary data={site} />
-              </Box>
-              <ChevronRight />
-            </ListItem>
+            <RouterLink
+              component={({ href }) => (
+                <ListItem
+                  component="a"
+                  href={href}
+                  onClick={(e: React.MouseEvent) =>
+                    onLinkClick && onLinkClick(e, site.id)
+                  }
+                >
+                  <Box color="text.primary" flex={1} minWidth={0}>
+                    <SiteSummary data={site} />
+                  </Box>
+
+                  <Box color="text.primary">
+                    <ChevronRight />
+                  </Box>
+                </ListItem>
+              )}
+              to={`/sites/${site.id}`}
+            />
           </React.Fragment>
         ))}
       </List>
 
-      <Box textAlign="center">
+      <Box p={3} textAlign="center">
         {isLoading ? (
           <CircularProgress aria-label="loading..." role="spinner" />
         ) : hasError ? (

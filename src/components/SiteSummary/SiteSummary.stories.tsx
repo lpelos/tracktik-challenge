@@ -2,7 +2,7 @@ import React from "react";
 
 import { Meta, Story } from "@storybook/react";
 
-import { siteDetailsData } from "../SiteDetails/SiteDetails.stories";
+import SITE_DATA from "../../__fixtures__/site-data.fixture";
 import SiteSummary, { SiteSummaryProps } from ".";
 
 export default {
@@ -12,7 +12,7 @@ export default {
 } as Meta;
 
 export const siteSummaryData: SiteSummaryProps = {
-  data: siteDetailsData.data,
+  data: SITE_DATA,
 };
 
 const Template: Story<SiteSummaryProps> = (args) => <SiteSummary {...args} />;

@@ -1,8 +1,10 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 
+import { MemoryRouter } from "react-router-dom";
+
 import { ContactDetailsProps } from "../ContactDetails";
-import { siteDetailsActionData, siteDetailsData } from "./SiteDetails.stories";
+import { siteDetailsData } from "./SiteDetails.stories";
 import { SiteDetailsProps } from "./SiteDetails";
 import { SiteSummaryProps } from "../SiteSummary";
 import SiteDetails from "./";
@@ -21,27 +23,27 @@ jest.mock("../ContactDetails", () => ContactDetailsMock);
 jest.mock("../SiteSummary", () => SiteSummaryMock);
 
 describe("<SiteDetails />", () => {
-  const site = siteDetailsData.data;
+  let container: (component: React.ReactElement) => React.ReactElement;
+  let props: SiteDetailsProps;
 
-  let onBackButtonClickMock: SiteDetailsProps["onBackButtonClick"];
+  let onLinkClickMock: jest.Mock<SiteDetailsProps["onLinkClick"]>;
 
   beforeEach(() => {
-    onBackButtonClickMock = jest.fn();
-    render(
-      <SiteDetails
-        {...siteDetailsData}
-        {...siteDetailsActionData}
-        onBackButtonClick={onBackButtonClickMock}
-      />
-    );
+    container = (component) => <MemoryRouter>{component}</MemoryRouter>;
+    onLinkClickMock = jest.fn();
+    props = { ...siteDetailsData, onLinkClick: onLinkClickMock };
   });
 
   test("renders site summary", () => {
-    const siteJSON = JSON.stringify(site);
+    render(container(<SiteDetails {...props} />));
+    const siteJSON = JSON.stringify(props.data);
     expect(screen.getByText(siteJSON)).toBeInTheDocument();
   });
 
   test("render images", () => {
+    render(container(<SiteDetails {...props} />));
+
+    const site = props.data!;
     site.images.forEach((src, i) => {
       const imageEl = screen.getByAltText(`${site.title} ${i + 1}`);
       expect(imageEl).toBeInTheDocument();
@@ -50,15 +52,23 @@ describe("<SiteDetails />", () => {
   });
 
   test("renders contact details", () => {
-    const contactJSON = JSON.stringify(site.contact);
+    render(container(<SiteDetails {...props} />));
+    const contactJSON = JSON.stringify(props.data?.contact);
     expect(screen.getByText(contactJSON)).toBeInTheDocument();
   });
 
-  test("triggers back button click", () => {
-    const goBackButtonEl = screen.getByTitle("Go back");
+  test("renders spinner", () => {
+    render(container(<SiteDetails {...props} isLoading={true} />));
+    expect(screen.getByRole(/spinner/i)).toBeInTheDocument();
+  });
 
-    fireEvent.click(goBackButtonEl);
+  test("triggers back link click callback", () => {
+    render(container(<SiteDetails {...props} />));
+    const backButtonEl = screen.getByTitle(/go back/i);
 
-    expect(onBackButtonClickMock).toHaveBeenCalled();
+    fireEvent.click(backButtonEl);
+
+    expect(onLinkClickMock).toHaveBeenCalled();
+    expect(onLinkClickMock.mock.calls[0][0]).toMatchObject({ type: "click" });
   });
 });

@@ -2,6 +2,7 @@ import React from "react";
 
 import { action } from "@storybook/addon-actions";
 import { Meta, Story } from "@storybook/react";
+import { StaticRouter } from "react-router-dom";
 
 import SITE_DATA_LIST from "../../__fixtures__/site-data-list.fixture";
 import SiteList, { SiteListProps } from ".";
@@ -9,10 +10,11 @@ import SiteList, { SiteListProps } from ".";
 export default {
   title: "SiteList",
   component: SiteList,
+  decorators: [(story) => <StaticRouter>{story()}</StaticRouter>],
   excludeStories: /.*Data$/,
 } as Meta;
 
-export const siteListData: Omit<SiteListProps, "onClickItem" | "onLoad"> = {
+export const siteListData: Omit<SiteListProps, "onLinkClick" | "onLoad"> = {
   data: SITE_DATA_LIST,
   hasMore: true,
   hasError: false,
@@ -21,9 +23,12 @@ export const siteListData: Omit<SiteListProps, "onClickItem" | "onLoad"> = {
 
 export const siteListActionData: Pick<
   SiteListProps,
-  "onClickItem" | "onLoad"
+  "onLinkClick" | "onLoad"
 > = {
-  onClickItem: action("onClickItem"),
+  onLinkClick: (event, ...args) => {
+    event.preventDefault();
+    action("onLinkClick")(event, ...args);
+  },
   onLoad: action("onLoad"),
 };
 
