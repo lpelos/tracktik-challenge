@@ -10,8 +10,11 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Typography from "@material-ui/core/Typography";
 
+import "./SiteList.scss";
 import SiteData from "../../data-types/site-data";
 import SiteSummary from "../SiteSummary";
+import { AppBar } from "@material-ui/core";
+import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 
 export interface SiteListProps {
   data: SiteData[];
@@ -32,17 +35,15 @@ const SiteList: React.FC<SiteListProps> = ({
 }) => {
   return (
     <Box className="SiteList" pb={3}>
-      <Box
-        bgcolor="primary.main"
-        color="white"
-        component="header"
-        role="header"
-        p={1}
-      >
-        <Typography align="center" variant="subtitle1">
-          Sites
-        </Typography>
-      </Box>
+      <AppBar elevation={0} position="fixed">
+        <Toolbar variant="dense">
+          <Box flex={1}>
+            <Typography align="center" variant="subtitle1">
+              Sites
+            </Typography>
+          </Box>
+        </Toolbar>
+      </AppBar>
 
       <List component="nav">
         {data.map((site, i) => (

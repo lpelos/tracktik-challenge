@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import App from "./";
 
@@ -10,8 +10,8 @@ const AppNavigationMock: React.FC = () => {
 jest.mock("../AppNavigation", () => AppNavigationMock);
 
 describe("<App />", () => {
-  test("renders without crashing", () => {
-    const { container } = render(<App />);
-    expect(container).toBeTruthy();
+  test("renders topbar title", () => {
+    render(<App />);
+    expect(screen.getByText(/scheduling/i)).toBeTruthy();
   });
 });
