@@ -3,11 +3,18 @@ import { Observable, throwError } from "rxjs";
 
 import AddressData from "../../data-types/address-data";
 import ContactData from "../../data-types/contact-data";
-import HttpClient from "../http";
+import HttpClient, { HttpQueryParams } from "../http";
 import HttpClientError from "../../errors/http-client.error";
 import SiteData from "../../data-types/site-data";
 
 //#region Typings
+
+interface ListOpt extends PaginationOpt {}
+
+export interface PaginationOpt {
+  limit?: number;
+  page?: number;
+}
 
 interface TrackTikClientDependencies {
   host: string;
@@ -33,9 +40,10 @@ class TrackTikClient {
     );
   }
 
-  listSites(): Observable<SiteData[]> {
+  listSites({ limit, page }: ListOpt = {}): Observable<SiteData[]> {
     const url = this.url("sites");
-    return this.httpClient.get({ url }).pipe(
+    const query = this.paginationToQueryParams({ limit, page });
+    return this.httpClient.get({ query, url }).pipe(
       catchError(this.handleError),
       map((resp) => this.parseSites(resp.body))
     );
@@ -51,6 +59,13 @@ class TrackTikClient {
     }
 
     throw err;
+  }
+
+  private paginationToQueryParams({
+    limit,
+    page,
+  }: PaginationOpt): HttpQueryParams {
+    return { _page: page, _limit: limit };
   }
 
   private parseAddress(json: Record<string, any>): AddressData {

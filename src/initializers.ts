@@ -1,7 +1,7 @@
 import { TRACKTIK_HOST } from "./env";
 import HttpClient, { HttpClientSuperAgentAdapter } from "./clients/http";
+import SiteRepository from "./repositories/site";
 import TrackTikClient from "./clients/tracktik";
-import SiteRepository from "./respositories/site";
 
 //#region Clients
 let httpClient: HttpClient;

@@ -94,9 +94,11 @@ describe("TrackTikClient", () => {
       });
 
       test("resquest", () => {
-        client.listSites();
+        const params = { page: 2, limit: 17 };
+        client.listSites({ ...params });
 
         expect(httpClientMock.get).toHaveBeenCalledWith({
+          query: { _limit: params.limit, _page: params.page },
           url: `${host}/sites`,
         });
       });

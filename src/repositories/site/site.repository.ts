@@ -1,9 +1,13 @@
 import { Observable } from "rxjs";
 
 import SiteData from "../../data-types/site-data";
-import TrackTickClient from "../../clients/tracktik/tracktik.client";
+import TrackTickClient, {
+  PaginationOpt,
+} from "../../clients/tracktik/tracktik.client";
 
 //#region Typings
+
+interface ListOpt extends PaginationOpt {}
 
 interface SiteRepositoryDependencies {
   trackTikClient: TrackTickClient;
@@ -22,8 +26,8 @@ export class SiteRepository {
     return this.trackTikClient.findSite(id);
   }
 
-  list(): Observable<SiteData[]> {
-    return this.trackTikClient.listSites();
+  list(opt?: ListOpt): Observable<SiteData[]> {
+    return this.trackTikClient.listSites(opt);
   }
 }
 

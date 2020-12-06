@@ -22,6 +22,9 @@ const listFailureAction = (error: Error) =>
 const LIST_REQUEST = "sites/list_request";
 const listRequestAction = () => action(LIST_REQUEST);
 
+const LIST_REQUEST_MORE = "sites/list_request_more";
+const listRequestMoreAction = () => action(LIST_REQUEST_MORE);
+
 const LIST_SUCCESS = "sites/list_success";
 const listSuccessAction = (sites: SiteData[]) =>
   action(LIST_SUCCESS, { sites });
@@ -31,13 +34,15 @@ export const SITES_ACTION_TYPES = {
   LIST_CANCEL,
   LIST_FAILURE,
   LIST_REQUEST,
+  LIST_REQUEST_MORE,
   LIST_SUCCESS,
-}
+};
 
 export const sitesActions = {
   listCancel: listCancelAction,
   listFailure: listFailureAction,
   listRequest: listRequestAction,
+  listRequestMore: listRequestMoreAction,
   listSuccess: listSuccessAction,
 };
 
@@ -59,6 +64,11 @@ export const selectSitesListError = (rootState: RootState) => {
   return state.error;
 };
 
+export const selectSitesHasMore = (rootState: RootState) => {
+  const state = selectSitesListSate(rootState);
+  return state.hasMore;
+};
+
 export const selectSitesListIsRequesting = (rootState: RootState) => {
   const state = selectSitesListSate(rootState);
   return state.isRequesting;
@@ -70,15 +80,21 @@ export const selectSitesListIsRequesting = (rootState: RootState) => {
 
 export interface SitesState {
   error?: ErrorData;
+  hasMore: boolean;
   ids: SiteData["id"][];
   isRequesting: boolean;
   listById: Record<SiteData["id"], SiteData>;
+  page: number;
+  pageSize: number;
 }
 
 const initialState: SitesState = {
   ids: [],
+  hasMore: true,
   isRequesting: false,
   listById: {},
+  page: 1,
+  pageSize: 10,
 };
 
 const sitesReducer = (state = initialState, action: RootAction) => {
@@ -97,15 +113,28 @@ const sitesReducer = (state = initialState, action: RootAction) => {
         ids: [],
         isRequesting: true,
         listById: {},
+        page: 1,
+      };
+    }
+    case LIST_REQUEST_MORE: {
+      return {
+        ...state,
+        error: undefined,
+        isRequesting: true,
+        page: state.page + 1,
       };
     }
     case LIST_SUCCESS: {
       const { sites } = action.payload;
+      const newIds = sites.map((s) => s.id);
+      const newListByIds = keyBy(sites, "id");
+
       return {
         ...state,
-        ids: sites.map((s) => s.id),
+        hasMore: sites.length >= state.pageSize,
+        ids: [...state.ids, ...newIds],
         isRequesting: false,
-        listById: keyBy(sites, "id"),
+        listById: { ...state.listById, ...newListByIds },
       };
     }
     default: {
@@ -118,16 +147,17 @@ const sitesReducer = (state = initialState, action: RootAction) => {
 
 //#region Epics
 
-const listEpic: AppEpic = (action$, _, { siteRepository }) =>
+const listEpic: AppEpic = (action$, state$, { siteRepository }) =>
   action$.pipe(
-    filter(isOfType(LIST_REQUEST)),
-    mergeMap(() =>
-      siteRepository.list().pipe(
+    filter(isOfType([LIST_REQUEST, LIST_REQUEST_MORE])),
+    mergeMap(() => {
+      const { page, pageSize: limit } = state$.value.sites;
+      return siteRepository.list({ limit, page }).pipe(
         takeUntil(action$.pipe(filter(isOfType(LIST_CANCEL)))),
         map((sites) => listSuccessAction(sites)),
         catchError((error) => of(listFailureAction(error)))
-      )
-    )
+      );
+    })
   );
 
 export const sitesEpics = combineEpics(listEpic);

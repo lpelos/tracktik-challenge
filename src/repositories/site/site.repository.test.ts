@@ -27,7 +27,8 @@ describe("SiteRepository", () => {
   });
 
   test("#list", () => {
-    repository.list();
-    expect(trackTikClientMock.listSites).toHaveBeenCalled();
+    const opt = { page: 6, limit: 2 };
+    repository.list(opt);
+    expect(trackTikClientMock.listSites).toHaveBeenCalledWith(opt);
   });
 });
