@@ -1,7 +1,7 @@
 # TrackTik Challange
 
 A two pages SPA application that communicates with a json-server and renders
-dynamic content using ReactDOM + Redux Observable.
+dynamic content using TypeScript + ReactDOM + Redux Observable.
 
 Built as a code challange for [TrackTik](https://www.tracktik.com/).
 
