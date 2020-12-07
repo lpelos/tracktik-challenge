@@ -61,6 +61,39 @@ $ yarn start
 
 The application will become available at http://localhost:3000.
 
+### Local Server Mode
+
+If the TrackTik's server is not available or you just want to work offline
+you can use a local json-server by running the application with the following
+command instead of the one above:
+
+```
+$ docker-compose up app-local
+```
+
+The local server will start on the backgrond and the app will redirect its
+requests to it automatically.
+
+If you wish to see the local server logs, run the following on a new tab:
+
+```
+$ docker-compose up json-server
+```
+
+Alternatively, if you are not using docker, you must start the local server
+manually with:
+
+```
+$ yarn json-server
+```
+
+And then, on a new tab, set the server's address environment variable and run
+the app with:
+
+```
+REACT_APP_TRACKTIK_HOST=http://localhost:3001 yarn start
+```
+
 ## Storybook
 
 With [Storybook](https://storybook.js.org/docs/react/get-started/introduction)

@@ -1,6 +1,10 @@
 version: "3.8"
 
-x-react-common: &react-common
+x-environment-common: &environment-common
+  HOST: 0.0.0.0
+  NODE_ENV: development
+
+x-node-common: &node-common
   build: .
   image: tracktick-challange
   stdin_open: true
@@ -14,7 +18,8 @@ x-react-common: &react-common
 
 services:
   app:
-    <<: *react-common
+    <<: *node-common
+    environment: *environment-common
     ports:
       - 3000:3000
     command: >
@@ -22,8 +27,33 @@ services:
         yarn install &&
         yarn start"
 
+  app-local:
+    <<: *node-common
+    environment:
+      <<: *environment-common
+      REACT_APP_TRACKTIK_HOST: http://localhost:3001
+    ports:
+      - 3000:3000
+    depends_on:
+      - json-server
+    command: >
+      bash -c "
+        yarn install &&
+        yarn start"
+
+  json-server:
+    <<: *node-common
+    environment: *environment-common
+    ports:
+      - 3001:3001
+    command: >
+      bash -c "
+        yarn install &&
+        yarn json-server"
+
   storybook:
-    <<: *react-common
+    <<: *node-common
+    environment: *environment-common
     ports:
       - 6006:6006
     command: >
