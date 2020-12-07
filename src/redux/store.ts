@@ -12,13 +12,15 @@ import logger from "redux-logger";
 
 import { ENVIRONMENT } from "../env";
 import { getSiteRepository } from "../initializers";
+import siteReducer, { SiteAction, siteEpics } from "./site";
 import sitesReducer, { SitesAction, sitesEpics } from "./sites";
 
 //#region Redux setup
 
-export type RootAction = SitesAction;
+export type RootAction = SiteAction | SitesAction;
 
 const rootReducer = combineReducers({
+  site: siteReducer,
   sites: sitesReducer,
 });
 
@@ -44,7 +46,7 @@ export type AppEpic = Epic<
 >;
 
 const rootEpic: AppEpic = (action$, state$, dep) =>
-  combineEpics<AppEpic>(sitesEpics)(action$, state$, dep).pipe(
+  combineEpics<AppEpic>(siteEpics, sitesEpics)(action$, state$, dep).pipe(
     catchError((error: Error) => {
       const { message, name } = error;
       // Possible improvement: send error data to an analytics service

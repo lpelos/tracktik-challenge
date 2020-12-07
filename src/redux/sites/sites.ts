@@ -11,7 +11,7 @@ import SiteData from "../../data-types/site-data";
 
 //#region Actions
 
-//#region public List Actions
+//#region List Actions
 const LIST_CANCEL = "sites/list_cancel";
 const listCancelAction = () => action(LIST_CANCEL);
 
@@ -28,7 +28,7 @@ const listRequestMoreAction = () => action(LIST_REQUEST_MORE);
 const LIST_SUCCESS = "sites/list_success";
 const listSuccessAction = (sites: SiteData[]) =>
   action(LIST_SUCCESS, { sites });
-//#endregion public List Actions
+//#endregion List Actions
 
 export const SITES_ACTION_TYPES = {
   LIST_CANCEL,
@@ -52,26 +52,36 @@ export type SitesAction = ActionType<typeof sitesActions>;
 
 //#region Selectors
 
-const selectSitesListSate = (rootState: RootState) => rootState.sites;
+const selectSitesState = (rootState: RootState) => rootState.sites;
+
+export const selectSitesHasMore = (rootState: RootState) => {
+  const state = selectSitesState(rootState);
+  return state.hasMore;
+};
 
 export const selectSitesList = (rootState: RootState) => {
-  const state = selectSitesListSate(rootState);
+  const state = selectSitesState(rootState);
   return state.ids.map((id) => state.listById[id]);
 };
 
 export const selectSitesListError = (rootState: RootState) => {
-  const state = selectSitesListSate(rootState);
+  const state = selectSitesState(rootState);
   return state.error;
 };
 
-export const selectSitesHasMore = (rootState: RootState) => {
-  const state = selectSitesListSate(rootState);
-  return state.hasMore;
+export const selectSitesListIsRequesting = (rootState: RootState) => {
+  const state = selectSitesState(rootState);
+  return state.isRequesting;
 };
 
-export const selectSitesListIsRequesting = (rootState: RootState) => {
-  const state = selectSitesListSate(rootState);
-  return state.isRequesting;
+export const selectSitesPage = (rootState: RootState) => {
+  const state = selectSitesState(rootState);
+  return state.page;
+};
+
+export const selectSitesPageSize = (rootState: RootState) => {
+  const state = selectSitesState(rootState);
+  return state.pageSize;
 };
 
 //#endregion Selectors
@@ -97,7 +107,10 @@ const initialState: SitesState = {
   pageSize: 10,
 };
 
-const sitesReducer = (state = initialState, action: RootAction) => {
+export const sitesReducer = (
+  state: SitesState = initialState,
+  action: RootAction
+) => {
   switch (action.type) {
     case LIST_CANCEL: {
       return { ...state, isRequesting: false };
@@ -151,7 +164,8 @@ const listEpic: AppEpic = (action$, state$, { siteRepository }) =>
   action$.pipe(
     filter(isOfType([LIST_REQUEST, LIST_REQUEST_MORE])),
     mergeMap(() => {
-      const { page, pageSize: limit } = state$.value.sites;
+      const page = selectSitesPage(state$.value);
+      const limit = selectSitesPageSize(state$.value);
       return siteRepository.list({ limit, page }).pipe(
         takeUntil(action$.pipe(filter(isOfType(LIST_CANCEL)))),
         map((sites) => listSuccessAction(sites)),

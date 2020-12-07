@@ -27,11 +27,17 @@ describe("<SiteDetails />", () => {
   let props: SiteDetailsProps;
 
   let onLinkClickMock: jest.Mock<SiteDetailsProps["onLinkClick"]>;
+  let onLoadMock: Required<SiteDetailsProps>["onLoad"];
 
   beforeEach(() => {
     container = (component) => <MemoryRouter>{component}</MemoryRouter>;
     onLinkClickMock = jest.fn();
-    props = { ...siteDetailsData, onLinkClick: onLinkClickMock };
+    onLoadMock = jest.fn();
+    props = {
+      ...siteDetailsData,
+      onLinkClick: onLinkClickMock,
+      onLoad: onLoadMock,
+    };
   });
 
   test("renders site summary", () => {
@@ -70,5 +76,31 @@ describe("<SiteDetails />", () => {
 
     expect(onLinkClickMock).toHaveBeenCalled();
     expect(onLinkClickMock.mock.calls[0][0]).toMatchObject({ type: "click" });
+  });
+
+  describe("with error", () => {
+    beforeEach(() => {
+      render(container(<SiteDetails {...props} hasError={true} />));
+    });
+
+    test("renders message", () => {
+      const messageEl = screen.getByText(/something went wrong/i);
+      expect(messageEl).toBeInTheDocument();
+    });
+
+    test("renders list link", () => {
+      const linkEl = screen.getByText(/go back to the list/i);
+      expect(linkEl).toBeInTheDocument();
+    });
+
+    test("renders try again button", () => {
+      expect(screen.getByText(/try again/i)).toBeInTheDocument();
+    });
+
+    test("triggers try again callback", () => {
+      const tryAgainButtonEl = screen.getByText(/try again/i);
+      fireEvent.click(tryAgainButtonEl);
+      expect(onLoadMock).toHaveBeenCalled();
+    });
   });
 });

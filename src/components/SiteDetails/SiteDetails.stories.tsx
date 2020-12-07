@@ -14,16 +14,24 @@ export default {
   excludeStories: /.*Data$/,
 } as Meta;
 
-export const siteDetailsData: Omit<SiteDetailsProps, "onLinkClick"> = {
+export const siteDetailsData: Omit<
+  SiteDetailsProps,
+  "onLinkClick" | "onLoad"
+> = {
   data: SITE_DATA,
+  hasError: false,
   isLoading: false,
 };
 
-export const siteDetailsActionData: Pick<SiteDetailsProps, "onLinkClick"> = {
+export const siteDetailsActionData: Pick<
+  SiteDetailsProps,
+  "onLinkClick" | "onLoad"
+> = {
   onLinkClick: (event, ...args) => {
     event.preventDefault();
     action("onLinkClick")(event, ...args);
   },
+  onLoad: action("onLoad"),
 };
 
 const Template: Story<SiteDetailsProps> = (args) => <SiteDetails {...args} />;
@@ -36,4 +44,11 @@ Loading.args = {
   ...siteDetailsData,
   ...siteDetailsActionData,
   isLoading: true,
+};
+
+export const WithError = Template.bind({});
+WithError.args = {
+  ...siteDetailsData,
+  ...siteDetailsActionData,
+  hasError: true,
 };

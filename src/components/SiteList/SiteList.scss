@@ -1,11 +1,14 @@
-.SiteList {
-  padding-top: 48px;
+.App {
+  .SiteList {
+    header {
+      left: 0;
+      position: fixed;
+      right: 0;
+      z-index: 1;
+    }
 
-  header {
-    left: 0;
-    position: fixed;
-    right: 0;
-    top: 48px;
-    z-index: 1;
+    nav {
+      padding-top: 48px;
+    }
   }
 }

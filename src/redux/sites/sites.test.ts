@@ -1,7 +1,6 @@
-import { sitesActions } from "./sites";
 import HttpClientError from "../../errors/http-client.error";
 import SITE_DATA_LIST from "../../__fixtures__/site-data-list.fixture";
-import sitesReducer, { SitesState } from ".";
+import sitesReducer, { sitesActions, SitesState } from ".";
 
 describe("sites reducer", () => {
   let initialState: SitesState;
@@ -42,25 +41,33 @@ describe("sites reducer", () => {
   });
 
   test("handles list cancel", () => {
+    const state = sitesReducer(initialState, sitesActions.listRequest());
     const action = sitesActions.listCancel();
-    expect(sitesReducer(initialState, action).isRequesting).toBe(false);
+    expect(sitesReducer(state, action).isRequesting).toBe(false);
   });
 
   test("handles list failure", () => {
+    const state = sitesReducer(initialState, sitesActions.listRequest());
     const error = new HttpClientError({ message: "bad stuff happened" });
     const action = sitesActions.listFailure(error);
-    expect(sitesReducer(initialState, action)).toEqual({
+    expect(sitesReducer(state, action)).toEqual({
       ...initialState,
       error: error.toJSON(),
+      isRequesting: false,
     });
   });
 
   describe("handles list success", () => {
+    let state: SitesState;
+    beforeEach(() => {
+      state = sitesReducer(initialState, sitesActions.listRequest());
+    });
+
     test("default", () => {
       const sites = SITE_DATA_LIST.slice(0, initialState.pageSize);
       const action = sitesActions.listSuccess(sites);
 
-      expect(sitesReducer(initialState, action)).toEqual({
+      expect(sitesReducer(state, action)).toEqual({
         ...initialState,
         hasMore: true,
         isRequesting: false,
@@ -74,7 +81,7 @@ describe("sites reducer", () => {
         const sites = SITE_DATA_LIST.slice(0, 1);
         const action = sitesActions.listSuccess(sites);
 
-        expect(sitesReducer(initialState, action)).toEqual({
+        expect(sitesReducer(state, action)).toEqual({
           ...initialState,
           hasMore: false,
           isRequesting: false,
@@ -86,7 +93,7 @@ describe("sites reducer", () => {
       test("empty page", () => {
         const action = sitesActions.listSuccess([]);
 
-        expect(sitesReducer(initialState, action)).toEqual({
+        expect(sitesReducer(state, action)).toEqual({
           ...initialState,
           hasMore: false,
           isRequesting: false,

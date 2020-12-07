@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Link as RouterLink } from "react-router-dom";
+import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import ChevronRight from "@material-ui/icons/ChevronRight";
@@ -8,13 +9,12 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 import Typography from "@material-ui/core/Typography";
 
 import "./SiteList.scss";
 import SiteData from "../../data-types/site-data";
 import SiteSummary from "../SiteSummary";
-import { AppBar } from "@material-ui/core";
-import Toolbar from "@material-ui/core/Toolbar/Toolbar";
 
 export interface SiteListProps {
   data: SiteData[];
@@ -35,7 +35,7 @@ const SiteList: React.FC<SiteListProps> = ({
 }) => {
   return (
     <Box className="SiteList" pb={3}>
-      <AppBar elevation={0} position="fixed">
+      <AppBar position="static">
         <Toolbar variant="dense">
           <Box flex={1}>
             <Typography align="center" variant="subtitle1">
