@@ -1,0 +1,23 @@
+.App {
+  .SiteDetails {
+    header {
+      left: 0;
+      position: fixed;
+      right: 0;
+      z-index: 1;
+    }
+
+    main {
+      padding-top: 96px;
+    }
+  }
+}
+
+.SiteDetails {
+  overflow-x: hidden;
+
+  header {
+    height: 96px;
+    justify-content: center;
+  }
+}

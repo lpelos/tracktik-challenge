@@ -1,46 +1,173 @@
-# Getting Started with Create React App
+# TrackTik Challange
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A two pages SPA application that communicates with a json-server and renders
+dynamic content using TypeScript + ReactDOM + Redux Observable.
 
-## Available Scripts
+Built as a code challange for [TrackTik](https://www.tracktik.com/).
 
-In the project directory, you can run:
+## Architecture
 
-### `yarn start`
+Having responsability separation and code testability in mind, the project
+includes several types of resources each of which in their own folders:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+* **\_\_fixtures__:** static data used by unit tests and [Storybook](#Storybook)
+stories.
+* **\_\_mocks__:** mocks of third party libs used by unit tests.
+* **clients:** services responsible for communicating with external resources,
+such as third-party libs and HTTP servers, and for abstracting them so that it
+is easier to replace them with something else and so the rest of the app doesn't
+have to know their APIs.
+* **components:** React components that are not connected to any external
+resource (e.g., Redux), most of which are available for visual and interactve
+tests on [Storybook](#Storybook).
+* **containers:** React components responsible for connecting atomic components
+to the Redux store and abstracting application state logic.
+* **data-types:** Typescript interfaces that represent the business data.
+* **errors:** Classes that extend from Javascript's native `Error` that
+represent specific types of application errors.
+* **helpers:** Pure functions with logic that is used by several resources or
+would otherwise be polluting a component's logic.
+* **redux:** Redux store configuration following de
+["ducks" pattern](https://redux.js.org/style-guide/style-guide#structure-files-as-feature-folders-or-ducks).
+* **respositories:** services injected as dependencies in the Redux Observable's
+Epics, each one responsible for gathering one specific type of data (e.g.,
+Sites, Users, etc.)
+* **screens:** React components responsible connecting other components to React
+DOM Router resources and abstracting navigation logic.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+All async operations use Observables instead of Javascript's native
+Promises.
 
-### `yarn test`
+Most of the app are tested with Jest. Test files are in the same folders as the
+resources they test.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Dependencies
 
-### `yarn build`
+It's recommended to use Docker to avoid problems with differences in environment
+configuration. If you don't have Docker installed refer to its official
+documentation on how to install
+[Docker Engine](https://docs.docker.com/engine/installation) and
+[Docker Compose](https://docs.docker.com/compose/install/).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Alternatively, if you prefere not to use Docker for some reason, these are the
+OS dependencies the project was built and tested on:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* **Node.js** v14.15.1
+* **Yarn**    1.22.5
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Refer to the official documentations on how to install
+[Node.js](https://nodejs.org/en/download/package-manager) and
+[Yarn](https://yarnpkg.com/getting-started/install).
 
-### `yarn eject`
+## Configuration
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+First clone the repository and move to its directory:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+$ git clone git@github.com:lpelos/tracktik-challange.git
+$ cd tracktik-challange
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Then build the projects's Docker image:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+$ docker-compose build
+```
 
-## Learn More
+That's it.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Alternatively, if your are not using docker, you must install the project
+dependencies with:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+$ yarn install
+```
+
+## Running the Application
+
+```
+$ docker-compose up app
+```
+
+Or, if you are not using Docker:
+
+```
+$ yarn start
+```
+
+The application will become available at http://localhost:3000.
+
+### Local Server Mode
+
+If the TrackTik's server is not available or you just want to work offline
+you can use a local json-server by running the application with the following
+command instead of the one above:
+
+```
+$ docker-compose up app-local
+```
+
+The local server will start on the backgrond and the app will redirect its
+requests to it automatically.
+
+If you wish to see the local server logs, run the following on a new tab:
+
+```
+$ docker-compose up json-server
+```
+
+Alternatively, if you are not using docker, you must start the local server
+manually with:
+
+```
+$ yarn json-server
+```
+
+And then, on a new tab, set the server's address environment variable and run
+the app with:
+
+```
+REACT_APP_TRACKTIK_HOST=http://localhost:3001 yarn start
+```
+
+## Storybook
+
+With [Storybook](https://storybook.js.org/docs/react/get-started/introduction)
+it is possible to test the project's components visually and interact with them
+in an isolated environment.
+
+```
+$ docker-compose up storybook
+```
+
+Or, if you are not using Docker:
+
+```
+$ yarn storybook
+```
+
+The storybook's UI will become available at http://localhost:6006.
+
+## Testing
+
+```
+$ docker-compose run --rm app yarn test
+```
+
+Or, if you are not using Docker:
+
+```
+$ yarn test
+```
+
+## Production Build
+
+```
+$ docker-compose run --rm app yarn build
+```
+
+Or, if you are not using Docker:
+
+```
+$ yarn build
+```
