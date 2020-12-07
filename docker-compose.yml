@@ -6,7 +6,7 @@ x-environment-common: &environment-common
 
 x-node-common: &node-common
   build: .
-  image: tracktick-challange
+  image: tracktik-challange
   stdin_open: true
   env_file:
     - .env.dev
