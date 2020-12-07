@@ -1,9 +1,9 @@
-# TrackTik Challange
+# TrackTik Challenge
 
 A two pages SPA application that communicates with a json-server and renders
 dynamic content using TypeScript + ReactDOM + Redux Observable.
 
-Built as a code challange for [TrackTik](https://www.tracktik.com/).
+Built as a code challenge for [TrackTik](https://www.tracktik.com/).
 
 ## Architecture
 
@@ -64,8 +64,8 @@ Refer to the official documentations on how to install
 First clone the repository and move to its directory:
 
 ```
-$ git clone git@github.com:lpelos/tracktik-challange.git
-$ cd tracktik-challange
+$ git clone git@github.com:lpelos/tracktik-challenge.git
+$ cd tracktik-challenge
 ```
 
 Then build the projects's Docker image:
