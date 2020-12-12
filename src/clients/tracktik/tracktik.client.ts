@@ -6,6 +6,7 @@ import ContactData from "../../data-types/contact-data";
 import HttpClient, { HttpQueryParams } from "../http";
 import HttpClientError from "../../errors/http-client.error";
 import SiteData from "../../data-types/site-data";
+import UserData from "../../data-types/user-data";
 
 //#region Typings
 
@@ -37,6 +38,14 @@ class TrackTikClient {
     return this.httpClient.get({ url }).pipe(
       catchError(this.handleError),
       map((resp) => this.parseSite(resp.body))
+    );
+  }
+
+  getCurrentUser(): Observable<UserData | undefined> {
+    const url = this.url('me');
+    return this.httpClient.get({ url }).pipe(
+      catchError(this.handleError),
+      map((resp) => this.parseUser(resp.body))
     );
   }
 
@@ -108,6 +117,17 @@ class TrackTikClient {
 
   private parseSites(list: Record<string, any>[]): SiteData[] {
     return list.map((json) => this.parseSite(json));
+  }
+
+  private parseUser(json: Record<string, any>): UserData {
+    return {
+      avatarUrl: json.avatar,
+      email: json.email,
+      id: json.id,
+      locale: json.locale,
+      name: json.givenName,
+      username: json.username,
+    };
   }
 
   private url(path?: string): string {

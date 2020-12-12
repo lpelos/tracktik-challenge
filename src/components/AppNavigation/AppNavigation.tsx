@@ -2,24 +2,29 @@ import React from "react";
 
 import { Redirect, Route, Switch } from "react-router-dom";
 
+import AppToolbarContainer from "../../containers/AppToolbarContainer";
 import SiteDetailsScreen from "../../screens/SiteDetailsScreen";
 import SiteListScreen from "../../screens/SiteListScreen";
 
 const AppNavigation: React.FC = () => {
   return (
-    <Switch>
-      <Route path="/sites/:id">
-        <SiteDetailsScreen />
-      </Route>
+    <div className="AppNavigation">
+      <AppToolbarContainer />
 
-      <Route path="/sites">
-        <SiteListScreen />
-      </Route>
+      <Switch>
+        <Route path="/sites/:id">
+          <SiteDetailsScreen />
+        </Route>
 
-      <Route path="/">
-        <Redirect to="/sites" />
-      </Route>
-    </Switch>
+        <Route path="/sites">
+          <SiteListScreen />
+        </Route>
+
+        <Route path="/">
+          <Redirect to="/sites" />
+        </Route>
+      </Switch>
+    </div>
   );
 };
 

@@ -2,6 +2,7 @@ import { TRACKTIK_HOST } from "./env";
 import HttpClient, { HttpClientSuperAgentAdapter } from "./clients/http";
 import SiteRepository from "./repositories/site";
 import TrackTikClient from "./clients/tracktik";
+import UserRepository from "./repositories/user";
 
 //#region Clients
 let httpClient: HttpClient;
@@ -34,5 +35,15 @@ export const getSiteRepository = (): SiteRepository => {
     });
   }
   return siteRepository;
+}
+
+let userRepository: UserRepository;
+export const getUserRepository = (): UserRepository => {
+  if (!userRepository) {
+    userRepository = new UserRepository({
+      trackTikClient: getTrackTikClient(),
+    });
+  }
+  return userRepository;
 };
 //#endregion Repositories

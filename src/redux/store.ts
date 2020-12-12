@@ -11,17 +11,19 @@ import { throwError } from "rxjs";
 import logger from "redux-logger";
 
 import { ENVIRONMENT } from "../env";
-import { getSiteRepository } from "../initializers";
+import { getSiteRepository, getUserRepository } from "../initializers";
 import siteReducer, { SiteAction, siteEpics } from "./site";
 import sitesReducer, { SitesAction, sitesEpics } from "./sites";
+import userReducer, { UserAction, userEpics } from "./user";
 
 //#region Redux setup
 
-export type RootAction = SiteAction | SitesAction;
+export type RootAction = SiteAction | SitesAction | UserAction;
 
 const rootReducer = combineReducers({
   site: siteReducer,
   sites: sitesReducer,
+  user: userReducer,
 });
 
 export type RootReducer = typeof rootReducer;
@@ -34,6 +36,7 @@ export type RootState = ReturnType<RootReducer>;
 
 const epicDependencies = {
   siteRepository: getSiteRepository(),
+  userRepository: getUserRepository(),
 };
 
 export type AppEpicDependencies = typeof epicDependencies;
@@ -46,7 +49,11 @@ export type AppEpic = Epic<
 >;
 
 const rootEpic: AppEpic = (action$, state$, dep) =>
-  combineEpics<AppEpic>(siteEpics, sitesEpics)(action$, state$, dep).pipe(
+  combineEpics<AppEpic>(siteEpics, sitesEpics, userEpics)(
+    action$,
+    state$,
+    dep
+  ).pipe(
     catchError((error: Error) => {
       const { message, name } = error;
       // Possible improvement: send error data to an analytics service

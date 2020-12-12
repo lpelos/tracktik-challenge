@@ -21,7 +21,7 @@ describe("SiteRepository", () => {
   });
 
   test("#find", () => {
-    const siteId = "le-site-id"
+    const siteId = "le-site-id";
     repository.find(siteId);
     expect(trackTikClientMock.findSite).toHaveBeenCalledWith(siteId);
   });

@@ -160,7 +160,7 @@ export const sitesReducer = (
 
 //#region Epics
 
-const listEpic: AppEpic = (action$, state$, { siteRepository }) =>
+export const listSitesEpic: AppEpic = (action$, state$, { siteRepository }) =>
   action$.pipe(
     filter(isOfType([LIST_REQUEST, LIST_REQUEST_MORE])),
     mergeMap(() => {
@@ -174,7 +174,7 @@ const listEpic: AppEpic = (action$, state$, { siteRepository }) =>
     })
   );
 
-export const sitesEpics = combineEpics(listEpic);
+export const sitesEpics = combineEpics(listSitesEpic);
 
 //#endregion Epics
 

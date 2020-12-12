@@ -67,8 +67,8 @@ export const selectSiteIsRequesting = (rootState: RootState) => {
 //#region Reducers
 
 export interface SiteState {
-  error?: ErrorData;
   data?: SiteData;
+  error?: ErrorData;
   isRequesting: boolean;
 }
 
@@ -110,19 +110,19 @@ export const siteReducer = (
 
 //#region Epics
 
-const findEpic: AppEpic = (action$, _, { siteRepository }) =>
+export const findSiteEpic: AppEpic = (action$, _, { siteRepository }) =>
   action$.pipe(
     filter(isOfType(FIND_REQUEST)),
     mergeMap(({ payload }) =>
       siteRepository.find(payload.id).pipe(
         takeUntil(action$.pipe(filter(isOfType(FIND_CANCEL)))),
-        map((sites) => findSuccessAction(sites)),
+        map((site) => findSuccessAction(site)),
         catchError((error) => of(findFailureAction(error)))
       )
     )
   );
 
-export const siteEpics = combineEpics(findEpic);
+export const siteEpics = combineEpics(findSiteEpic);
 
 //#endregion Epics
 
